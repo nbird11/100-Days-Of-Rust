@@ -1,27 +1,36 @@
-use std::io;
+fn calc_days(age: u32) -> u32 {
+    return age * 365;
+}
 
 fn main() {
+    let mut running = true;
 
-    loop {
+    while running {
+        println!("Please input your age in years!");
 
-    println!("Please input your age in years!");
+        let mut input_age = String::new();
 
-    let mut guess = String::new();
+        std::io::stdin()
+            .read_line(&mut input_age)
+            .expect("Input value should be a string");
 
-    
-        io::stdin()
-            .read_line(&mut guess)
-            .expect("Could not read age. Make you an integer is used.");
-        
-        let guess: u32 =  match guess.trim().parse() {
-            Ok(num) => num, 
-            Err(_) => continue,
+        let years: i32 = match input_age.trim().parse() {
+            Ok(parsed_age) => {
+                if parsed_age < 0 {
+                    running = false;
+                    continue;
+                }
+                parsed_age
+            },
+            Err(_) => {
+                println!("Invalid age! Please input a positive whole number!");
+                continue;
+            }
         };
 
-        let age: u32 = guess * 365;
+        let days: u32 = calc_days(years as u32);
 
-        println!("You are roughly {age} days old!")
-
+        println!("You are roughly {days} days old!");
     }
-
 }
+
