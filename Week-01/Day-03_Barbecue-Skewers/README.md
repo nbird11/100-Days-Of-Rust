@@ -17,7 +17,7 @@ For example, the grill below has **4 non-vegetarian skewers** and **1 vegetarian
 Given a BBQ grill, write a function that returns `[# vegetarian skewers, # non-vegetarian skewers]`. For example above, the function should return `[1, 4]`.
 
 ```text
- [
+[
   "--oooo-ooo--",
   "--xx--x--xx--",
   "--o---o--oo--",
@@ -31,7 +31,7 @@ Given a BBQ grill, write a function that returns `[# vegetarian skewers, # non-v
   "--o---",
   "-o-----o---x--",
   "--o---o-----"
-) ➞ [3, 2]
+] ➞ [3, 2]
 ```
 
 ---
