@@ -5,7 +5,7 @@ fn progress_days(days: &[i32]) -> i32 {
             days_of_progress += 1;
         }
     }
-    return days_of_progress;
+    days_of_progress
 }
 
 
