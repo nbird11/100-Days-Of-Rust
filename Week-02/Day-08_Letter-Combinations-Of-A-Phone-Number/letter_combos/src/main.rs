@@ -74,13 +74,12 @@ async fn get_real_words(combos: &Vec<String>) -> Vec<String> {
 
     for (index, combo) in combos.iter().enumerate() {
         let request_url = format!("{base_url}{combo}");
-        println!("{} / {amt_combos} Checking {combo}...", index + 1);
+        println!("{} / {amt_combos}: Checking {combo}...", index + 1);
         let response = client.get(&request_url).headers(headers.clone()).send().await;
 
         if let Ok(response) = response {
-            match response.status() {
-                StatusCode::OK => words.push(String::from(combo)),
-                _ => ()
+            if response.status() == StatusCode::OK {
+                words.push(String::from(combo));
             }
         }
     }
@@ -90,7 +89,7 @@ async fn get_real_words(combos: &Vec<String>) -> Vec<String> {
 
 #[tokio::main]
 async fn main() {
-    let combos = get_combos("628426");
+    let combos = get_combos("");
     let words = get_real_words(&combos).await;
-    println!("{words:?}");
+    println!("Words: {words:?}");
 }
