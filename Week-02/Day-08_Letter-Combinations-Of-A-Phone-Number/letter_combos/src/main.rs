@@ -1,6 +1,6 @@
 use std::collections::hash_map::HashMap;
-use reqwest::header::{HeaderMap, HeaderValue, HOST, X_RAPIDAPI_KEY};
-use reqwest::Error;
+use reqwest::header::{HeaderMap, HeaderValue, HOST};
+use reqwest::{Client, StatusCode};
 
 fn get_possible_letters(digits: &str) -> Vec<String> {
     if digits.is_empty() {
@@ -61,19 +61,36 @@ fn get_combos(digits: &str) -> Vec<String> {
     get_combos_for_letters(&get_possible_letters(digits))
 }
 
-#[tokio::main]
-async fn main() -> Result<(), Error> {
-    let url = "https://wordsapiv1.p.rapidapi.com/words/{}";
-
+async fn get_real_words(combos: &Vec<String>) -> Vec<String> {
+    let base_url = "https://wordsapiv1.p.rapidapi.com/words/";
     let mut headers = HeaderMap::new();
     headers.insert(HOST, HeaderValue::from_static("wordsapiv1.p.rapidapi.com"));
-    headers.insert(X_RAPIDAPI_KEY, HeaderValue::from_static("your-rapidapi-key"));
+    headers.insert("x-rapidapi-key", HeaderValue::from_static("d535baf35emsh8e5aee57b340407p1df333jsn98a3d081c877"));
 
-    let client = reqwest::Client::new();
-    let response = client.get(url).headers(headers).send().await?;
+    let client = Client::new();
+    let mut words = Vec::new();
 
-    let body = response.text().await?;
-    println!("body = {:?}", body);
+    let amt_combos = combos.len();
 
-    Ok(())
+    for (index, combo) in combos.iter().enumerate() {
+        let request_url = format!("{base_url}{combo}");
+        println!("{} / {amt_combos} Checking {combo}...", index + 1);
+        let response = client.get(&request_url).headers(headers.clone()).send().await;
+
+        if let Ok(response) = response {
+            match response.status() {
+                StatusCode::OK => words.push(String::from(combo)),
+                _ => ()
+            }
+        }
+    }
+
+    words
+}
+
+#[tokio::main]
+async fn main() {
+    let combos = get_combos("628426");
+    let words = get_real_words(&combos).await;
+    println!("{words:?}");
 }
